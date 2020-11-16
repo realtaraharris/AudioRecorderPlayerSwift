@@ -14,7 +14,7 @@ func outputCallback(inUserData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, i
         return
     }
 
-    let numBytes: Int = frameCount / 3
+    let numBytes: Int = Int(bufferByteSize)
     let endIndex = min(audioData.count, player.pointee.end)
     
     if (endIndex <= player.pointee.start) {
@@ -44,7 +44,7 @@ struct Player {
         var packetPosition: UInt32 = 0
         var running: Bool = false
         var start: Int = 0
-        var end: Int = frameCount / 3
+        var end: Int = Int(bufferByteSize)
     }
 
     init() {

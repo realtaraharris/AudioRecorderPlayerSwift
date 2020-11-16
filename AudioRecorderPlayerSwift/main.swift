@@ -22,8 +22,8 @@ audioFormat.mBitsPerChannel = 16
 audioFormat.mReserved = 0 // tweak for alignment to 8-bit bytes. always set this to 0
 
 // PCM buffer size: sample rate * number of channels * bytes per channel * duration of the buffer
-let bufferByteSize: UInt32 = 22050
-let frameCount = 66150
+let bufferByteSize: UInt32 = 22050 // 0.25s
+let frameCount = 66150 // 0.75s
 
 //makeWave()
 //makeNoise()
