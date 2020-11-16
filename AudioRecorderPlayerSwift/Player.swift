@@ -10,31 +10,31 @@ import Foundation
 
 func outputCallback(inUserData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, inBuffer: AudioQueueBufferRef) {
     guard let player = inUserData?.assumingMemoryBound(to: Player.PlayingState.self) else {
-        print("returned early")
+        print("missing user data in output callback")
         return
     }
 
     let numBytes: Int = Int(bufferByteSize)
     let endIndex = min(audioData.count, player.pointee.end)
-    
-    if (endIndex <= player.pointee.start) {
+
+    if player.pointee.start >= audioData.count {
         player.pointee.running = false
+        print("found end of audio data")
         return
     }
 
-    let slice = audioData[player.pointee.start..<endIndex]
-    
-//    print("slice:", slice, "player.pointee.start:", player.pointee.start, "player.pointee.end:", player.pointee.end)
-    
-    player.pointee.start += numBytes
-    player.pointee.end += numBytes
-    
-    memcpy(inBuffer.pointee.mAudioData, Array(slice), Int(numBytes))
-    inBuffer.pointee.mAudioDataByteSize = UInt32(numBytes)
+    let slice = audioData[player.pointee.start ..< endIndex]
 
-    if player.pointee.running {
-        check(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil))
-    }
+    let sliceCount = slice.count
+    player.pointee.start += numBytes
+    player.pointee.end += sliceCount
+
+    //    print("slice:", slice, "player.pointee.start:", player.pointee.start, "player.pointee.end:", player.pointee.end)
+    print("numBytes:", numBytes, "sliceCount:", sliceCount)
+
+    memcpy(inBuffer.pointee.mAudioData, Array(slice), sliceCount)
+    inBuffer.pointee.mAudioDataByteSize = UInt32(sliceCount)
+    check(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil))
 }
 
 struct Player {
