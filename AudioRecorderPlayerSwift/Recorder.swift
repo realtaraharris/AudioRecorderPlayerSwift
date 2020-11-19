@@ -18,18 +18,15 @@ func inputCallback(inUserData: UnsafeMutableRawPointer?, inQueue: AudioQueueRef,
     let int16Buffer = UnsafeBufferPointer(start: int16Ptr, count: numBytes)
 
     audioData.append(contentsOf: Array(int16Buffer))
-
     recorder.pointee.packetPosition += inNumPackets
 
-    // re-enqueue the used buffer
+    // enqueue the buffer, or re-enqueue it if it's a used one
     if recorder.pointee.running {
         check(AudioQueueEnqueueBuffer(inQueue, inBuffer, 0, inPacketDesc))
     }
 }
 
 struct Recorder {
-    let bufferCount = 3
-
     struct RecordingState {
         var packetPosition: UInt32 = 0
         var running: Bool = false
@@ -41,9 +38,9 @@ struct Recorder {
 
         check(AudioQueueNewInput(&audioFormat, inputCallback, &recordingState, nil, nil, 0, &queue))
 
-        for _ in 0 ..< bufferCount {
+        for _ in 0 ..< BUFFER_COUNT {
             var buffer: AudioQueueBufferRef?
-            check(AudioQueueAllocateBuffer(queue!, bufferByteSize, &buffer))
+            check(AudioQueueAllocateBuffer(queue!, UInt32(bufferByteSize), &buffer))
             check(AudioQueueEnqueueBuffer(queue!, buffer!, 0, nil))
         }
 

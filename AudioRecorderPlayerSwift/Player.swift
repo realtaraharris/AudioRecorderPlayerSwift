@@ -8,38 +8,41 @@
 import AudioToolbox
 import Foundation
 
+var lastIndexRead: Int = 0
+
 func outputCallback(inUserData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, inBuffer: AudioQueueBufferRef) {
     guard let player = inUserData?.assumingMemoryBound(to: Player.PlayingState.self) else {
         print("missing user data in output callback")
         return
     }
 
-    let numBytes: Int = Int(bufferByteSize)
-    let endIndex = min(audioData.count, player.pointee.end)
+    let sliceStart = lastIndexRead
+    let sliceEnd = min(audioData.count, lastIndexRead + bufferByteSize - 1)
+    print("slice start:", sliceStart, "slice end:", sliceEnd, "audioData.count", audioData.count)
 
-    if player.pointee.start >= audioData.count {
+    if sliceEnd >= audioData.count {
         player.pointee.running = false
         print("found end of audio data")
         return
     }
 
-    let slice = audioData[player.pointee.start ..< endIndex]
-
+    let slice = Array(audioData[sliceStart ..< sliceEnd])
     let sliceCount = slice.count
-    player.pointee.start += numBytes
-    player.pointee.end += sliceCount
 
-    //    print("slice:", slice, "player.pointee.start:", player.pointee.start, "player.pointee.end:", player.pointee.end)
-    print("numBytes:", numBytes, "sliceCount:", sliceCount)
+    // doesn't fix it
+    // audioData[sliceStart ..< sliceEnd].withUnsafeBytes {
+    //     inBuffer.pointee.mAudioData.copyMemory(from: $0.baseAddress!, byteCount: Int(sliceCount))
+    // }
 
-    memcpy(inBuffer.pointee.mAudioData, Array(slice), sliceCount)
+    memcpy(inBuffer.pointee.mAudioData, slice, sliceCount)
     inBuffer.pointee.mAudioDataByteSize = UInt32(sliceCount)
+    lastIndexRead += sliceCount + 1
+
+    // enqueue the buffer, or re-enqueue it if it's a used one
     check(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil))
 }
 
 struct Player {
-    let bufferCount = 3
-
     struct PlayingState {
         var packetPosition: UInt32 = 0
         var running: Bool = false
@@ -50,14 +53,19 @@ struct Player {
     init() {
         var playingState: PlayingState = PlayingState()
         var queue: AudioQueueRef?
+
+        // this doesn't help
+        // check(AudioQueueNewOutput(&audioFormat, outputCallback, &playingState, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue, 0, &queue))
+
         check(AudioQueueNewOutput(&audioFormat, outputCallback, &playingState, nil, nil, 0, &queue))
 
-        var buffers: [AudioQueueBufferRef?] = Array<AudioQueueBufferRef?>.init(repeating: nil, count: bufferCount)
+        var buffers: [AudioQueueBufferRef?] = Array<AudioQueueBufferRef?>.init(repeating: nil, count: BUFFER_COUNT)
 
+        print("Playing\n")
         playingState.running = true
 
-        for i in 0 ..< bufferCount {
-            check(AudioQueueAllocateBuffer(queue!, bufferByteSize, &buffers[i]))
+        for i in 0 ..< BUFFER_COUNT {
+            check(AudioQueueAllocateBuffer(queue!, UInt32(bufferByteSize), &buffers[i]))
             outputCallback(inUserData: &playingState, inAQ: queue!, inBuffer: buffers[i]!)
 
             if !playingState.running {
@@ -67,15 +75,13 @@ struct Player {
 
         check(AudioQueueStart(queue!, nil))
 
-        print("Playing\n")
         repeat {
-            CFRunLoopRunInMode(CFRunLoopMode.defaultMode, 0.25, false)
+            CFRunLoopRunInMode(CFRunLoopMode.defaultMode, BUFFER_DURATION, false)
         } while playingState.running
 
-        // delay to ensure queue plays out buffered audio
-        CFRunLoopRunInMode(CFRunLoopMode.defaultMode, 2, false)
+        // delay to ensure queue emits all buffered audio
+        CFRunLoopRunInMode(CFRunLoopMode.defaultMode, BUFFER_DURATION * Double(BUFFER_COUNT + 1), false)
 
-        playingState.running = false
         check(AudioQueueStop(queue!, true))
         check(AudioQueueDispose(queue!, true))
     }

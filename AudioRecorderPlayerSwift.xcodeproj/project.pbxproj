@@ -10,7 +10,7 @@
 		5088321D2554EEE00001E5A2 /* Recorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088321C2554EEE00001E5A2 /* Recorder.swift */; };
 		508832292555A8960001E5A2 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508832282555A8960001E5A2 /* Utils.swift */; };
 		5088322E2555AA1F0001E5A2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088322D2555AA1F0001E5A2 /* main.swift */; };
-		5088323125589D990001E5A2 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088323025589D990001E5A2 /* Player.swift */; };
+		5096B41F256584EC001F656C /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5096B41E256584EC001F656C /* Player.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,7 +30,7 @@
 		5088321C2554EEE00001E5A2 /* Recorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recorder.swift; sourceTree = "<group>"; };
 		508832282555A8960001E5A2 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		5088322D2555AA1F0001E5A2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		5088323025589D990001E5A2 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		5096B41E256584EC001F656C /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +66,7 @@
 				5088321C2554EEE00001E5A2 /* Recorder.swift */,
 				508832282555A8960001E5A2 /* Utils.swift */,
 				5088322D2555AA1F0001E5A2 /* main.swift */,
-				5088323025589D990001E5A2 /* Player.swift */,
+				5096B41E256584EC001F656C /* Player.swift */,
 			);
 			path = AudioRecorderPlayerSwift;
 			sourceTree = "<group>";
@@ -128,7 +128,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5088323125589D990001E5A2 /* Player.swift in Sources */,
+				5096B41F256584EC001F656C /* Player.swift in Sources */,
 				5088321D2554EEE00001E5A2 /* Recorder.swift in Sources */,
 				508832292555A8960001E5A2 /* Utils.swift in Sources */,
 				5088322E2555AA1F0001E5A2 /* main.swift in Sources */,
