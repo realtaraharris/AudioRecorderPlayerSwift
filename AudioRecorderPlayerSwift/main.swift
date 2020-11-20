@@ -22,14 +22,14 @@ audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsP
 audioFormat.mBitsPerChannel = UInt32(8 * MemoryLayout<Int16>.size)
 audioFormat.mChannelsPerFrame = UInt32(NUM_CHANNELS)
 audioFormat.mFramesPerPacket = 1
-audioFormat.mBytesPerFrame =  UInt32(MemoryLayout<Int16>.size * NUM_CHANNELS)
+audioFormat.mBytesPerFrame = UInt32(MemoryLayout<Int16>.size * NUM_CHANNELS)
 audioFormat.mBytesPerPacket = audioFormat.mBytesPerFrame * audioFormat.mFramesPerPacket
 audioFormat.mReserved = 0 // tweak for alignment to 8-bit bytes. always set this to 0
 
 // PCM buffer size: sample rate * number of channels * bytes per channel * duration of the buffer
 let bufferByteSize: Int = Int(Double(Int(audioFormat.mSampleRate) * NUM_CHANNELS * MemoryLayout<Int16>.size) * BUFFER_DURATION)
 
-makeWave(duration: 30.0, frequency: 441.0)
-//makeNoise(frameCount: Int(44100.0 * 30))
-//_ = Recorder()
+// makeWave(duration: 30.0, frequency: 441.0)
+// makeNoise(frameCount: Int(44100.0 * 30))
+_ = Recorder()
 _ = Player()

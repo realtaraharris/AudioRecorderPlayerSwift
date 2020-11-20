@@ -16,9 +16,9 @@ func outputCallback(inUserData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, i
         return
     }
 
+    let bytesPerChannel = MemoryLayout<Int16>.size
     let sliceStart = lastIndexRead
-    let sliceEnd = min(audioData.count, lastIndexRead + bufferByteSize - 1)
-    print("slice start:", sliceStart, "slice end:", sliceEnd, "audioData.count", audioData.count)
+    let sliceEnd = min(audioData.count, lastIndexRead + bufferByteSize / bytesPerChannel)
 
     if sliceEnd >= audioData.count {
         player.pointee.running = false
@@ -29,14 +29,12 @@ func outputCallback(inUserData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, i
     let slice = Array(audioData[sliceStart ..< sliceEnd])
     let sliceCount = slice.count
 
-    // doesn't fix it
-    // audioData[sliceStart ..< sliceEnd].withUnsafeBytes {
-    //     inBuffer.pointee.mAudioData.copyMemory(from: $0.baseAddress!, byteCount: Int(sliceCount))
-    // }
+    // print("slice start:", sliceStart, "slice end:", sliceEnd, "audioData.count", audioData.count, "slice count:", sliceCount)
 
-    memcpy(inBuffer.pointee.mAudioData, slice, sliceCount)
-    inBuffer.pointee.mAudioDataByteSize = UInt32(sliceCount)
-    lastIndexRead += sliceCount + 1
+    // need to be careful to convert from counts of Ints to bytes
+    memcpy(inBuffer.pointee.mAudioData, slice, sliceCount * bytesPerChannel)
+    inBuffer.pointee.mAudioDataByteSize = UInt32(sliceCount * bytesPerChannel)
+    lastIndexRead += sliceCount
 
     // enqueue the buffer, or re-enqueue it if it's a used one
     check(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, nil))
@@ -44,18 +42,12 @@ func outputCallback(inUserData: UnsafeMutableRawPointer?, inAQ: AudioQueueRef, i
 
 struct Player {
     struct PlayingState {
-        var packetPosition: UInt32 = 0
         var running: Bool = false
-        var start: Int = 0
-        var end: Int = Int(bufferByteSize)
     }
 
     init() {
         var playingState: PlayingState = PlayingState()
         var queue: AudioQueueRef?
-
-        // this doesn't help
-        // check(AudioQueueNewOutput(&audioFormat, outputCallback, &playingState, CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue, 0, &queue))
 
         check(AudioQueueNewOutput(&audioFormat, outputCallback, &playingState, nil, nil, 0, &queue))
 

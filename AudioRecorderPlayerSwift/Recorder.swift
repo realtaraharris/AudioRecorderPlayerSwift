@@ -8,17 +8,17 @@
 import AudioToolbox
 import Foundation
 
-func inputCallback(inUserData: UnsafeMutableRawPointer?, inQueue: AudioQueueRef, inBuffer: AudioQueueBufferRef, inStartTime _: UnsafePointer<AudioTimeStamp>, inNumPackets: UInt32, inPacketDesc: UnsafePointer<AudioStreamPacketDescription>?) {
+func inputCallback(inUserData: UnsafeMutableRawPointer?, inQueue: AudioQueueRef, inBuffer: AudioQueueBufferRef, inStartTime _: UnsafePointer<AudioTimeStamp>, inNumPackets _: UInt32, inPacketDesc: UnsafePointer<AudioStreamPacketDescription>?) {
     guard let recorder = inUserData?.assumingMemoryBound(to: Recorder.RecordingState.self) else {
         return
     }
 
-    let numBytes: Int = Int(inBuffer.pointee.mAudioDataBytesCapacity)
+    let bytesPerChannel = MemoryLayout<Int16>.size
+    let numBytes: Int = Int(inBuffer.pointee.mAudioDataBytesCapacity) / bytesPerChannel
     let int16Ptr = inBuffer.pointee.mAudioData.bindMemory(to: Int16.self, capacity: numBytes)
     let int16Buffer = UnsafeBufferPointer(start: int16Ptr, count: numBytes)
 
     audioData.append(contentsOf: Array(int16Buffer))
-    recorder.pointee.packetPosition += inNumPackets
 
     // enqueue the buffer, or re-enqueue it if it's a used one
     if recorder.pointee.running {
@@ -28,7 +28,6 @@ func inputCallback(inUserData: UnsafeMutableRawPointer?, inQueue: AudioQueueRef,
 
 struct Recorder {
     struct RecordingState {
-        var packetPosition: UInt32 = 0
         var running: Bool = false
     }
 
