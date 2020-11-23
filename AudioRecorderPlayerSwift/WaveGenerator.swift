@@ -31,13 +31,18 @@ func generateSong(waveGuide: inout WaveGuide) {
 //        waveGuide.rightOffset = Double.pi
         multiBeep(waveGuide: &waveGuide, frequencies: [64, 96, 128, 96], multiplier: 4.0)
     }
-}
 
-func generateSong2(waveGuide: inout WaveGuide) {
     for _ in 0 ..< 2 {
         waveGuide.rightOffset = 0
         multiBeep(waveGuide: &waveGuide, frequencies: [64, 96, 128, 96], multiplier: 1.77)
         waveGuide.rightOffset = 0
+        multiBeep(waveGuide: &waveGuide, frequencies: [64, 96, 128, 96], multiplier: 4.0)
+    }
+
+    for _ in 0 ..< 2 {
+        waveGuide.rightOffset = 0
+        multiBeep(waveGuide: &waveGuide, frequencies: [64, 96, 128, 96], multiplier: 2.0)
+//        waveGuide.rightOffset = Double.pi
         multiBeep(waveGuide: &waveGuide, frequencies: [64, 96, 128, 96], multiplier: 4.0)
     }
 }

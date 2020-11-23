@@ -31,9 +31,7 @@ let bufferByteSize: Int = Int(Double(Int(audioFormat.mSampleRate) * CHANNEL_COUN
 
 var waveGuide = WaveGuide(offset: 0, duration: 0.25, sampleRate: SAMPLE_RATE, frequency: 0, channelCount: CHANNEL_COUNT, leftOffset: 0.0, rightOffset: 0)
 
-generateSong(waveGuide: &waveGuide)
-generateSong2(waveGuide: &waveGuide)
-generateSong(waveGuide: &waveGuide)
+// generateSong(waveGuide: &waveGuide)
 // makeNoise(frameCount: Int(44100.0 * 30))
 _ = Recorder()
 _ = Player()
