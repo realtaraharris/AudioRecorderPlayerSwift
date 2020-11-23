@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5078BF60256C5350005CE455 /* WaveGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5078BF5F256C5350005CE455 /* WaveGenerator.swift */; };
 		5088321D2554EEE00001E5A2 /* Recorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088321C2554EEE00001E5A2 /* Recorder.swift */; };
 		508832292555A8960001E5A2 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508832282555A8960001E5A2 /* Utils.swift */; };
 		5088322E2555AA1F0001E5A2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5088322D2555AA1F0001E5A2 /* main.swift */; };
@@ -26,6 +27,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5078BF5F256C5350005CE455 /* WaveGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveGenerator.swift; sourceTree = "<group>"; };
+		5078BF62256C6CED005CE455 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		508832192554EEE00001E5A2 /* AudioRecorderPlayerSwift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AudioRecorderPlayerSwift; sourceTree = BUILT_PRODUCTS_DIR; };
 		5088321C2554EEE00001E5A2 /* Recorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recorder.swift; sourceTree = "<group>"; };
 		508832282555A8960001E5A2 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -67,6 +70,8 @@
 				508832282555A8960001E5A2 /* Utils.swift */,
 				5088322D2555AA1F0001E5A2 /* main.swift */,
 				5096B41E256584EC001F656C /* Player.swift */,
+				5078BF5F256C5350005CE455 /* WaveGenerator.swift */,
+				5078BF62256C6CED005CE455 /* README.md */,
 			);
 			path = AudioRecorderPlayerSwift;
 			sourceTree = "<group>";
@@ -129,6 +134,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5096B41F256584EC001F656C /* Player.swift in Sources */,
+				5078BF60256C5350005CE455 /* WaveGenerator.swift in Sources */,
 				5088321D2554EEE00001E5A2 /* Recorder.swift in Sources */,
 				508832292555A8960001E5A2 /* Utils.swift in Sources */,
 				5088322E2555AA1F0001E5A2 /* main.swift in Sources */,
